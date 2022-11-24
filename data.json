@@ -1,0 +1,78 @@
+[
+    {
+        "name": "Samsung",
+        "category":"samsung",
+        "img":"https://i.ibb.co/qpd2NdQ/samsumg.jpg",
+        "products":[
+            {
+                "name": "Samsung 10",
+                "price": 7000
+            },
+            {
+                "name": "Samsung 15",
+                "price": 10000
+            },
+            {
+                "name": "Samsung 17",
+                "price": 9000
+            }
+        ]
+    },
+    {
+        "name": "Oppo",
+        "category":"oppo",
+        "img":"https://i.ibb.co/w4JQHhM/oppo.png",
+        "products":[
+            {
+                "name": "Oppo 10",
+                "price": 10000
+            },
+            {
+                "name": "Oppo 15",
+                "price": 12000
+            },
+            {
+                "name": "Oppo 17",
+                "price": 15000
+            }
+        ]
+    },
+    {
+        "name": "Apple",
+        "category":"apple",
+        "img":"https://i.ibb.co/jkWK6PD/apple.jpg",
+        "products":[
+            {
+                "name": "iPhone 10",
+                "price": 10000
+            },
+            {
+                "name": "iPhone 15",
+                "price": 12000
+            },
+            {
+                "name": "iPhone 17",
+                "price": 15000
+            }
+        ]
+    },
+    {
+        "name": "Huawei",
+        "category":"huawei",
+        "img":"https://i.ibb.co/Ry4ZPLQ/huawei.png",
+        "products":[
+            {
+                "name": "Huawei 10",
+                "price": 10000
+            },
+            {
+                "name": "Huawei 15",
+                "price": 12000
+            },
+            {
+                "name": "Huawei 17",
+                "price": 15000
+            }
+        ] 
+    }
+]

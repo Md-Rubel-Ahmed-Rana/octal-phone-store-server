@@ -21,12 +21,39 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const server = async() => {
     try {
         const productCollection = client.db("octal-phone-store").collection("products");
+        const usersCollection = client.db("octal-phone-store").collection("users");
 
+    
         app.get("/products", async(req, res) => {
             const products = await productCollection.find({}).toArray();
             res.send(products)
         })
+
+        app.get("/products/:category", async (req, res) => {
+            const category = req.params.category
+            const products = await productCollection.findOne({ category: category })
+            res.send(products)
+        })
+
+        app.post("/users", async(req, res) => {
+            const userData = req.body;
+            const user = await usersCollection.insertOne(userData);
+            res.send(user)
+        })
         
+        app.get("/users", async(req, res) => {
+            const role = req.query.role;
+            let query = { role : role}
+            if(query.role === "seller"){
+                query.role === "seller"
+            } else if (query.role === "buyer"){
+                query.role === "buyer"
+            } else if (query.role === "admin") {
+                const users = await usersCollection.find({}).toArray();
+                res.send(users)
+            }
+        })
+
     } catch (error) {
         console.log(error);
     }
