@@ -22,6 +22,7 @@ const server = async() => {
     try {
         const productCollection = client.db("octal-phone-store").collection("products");
         const usersCollection = client.db("octal-phone-store").collection("users");
+        const ordersCollection = client.db("octal-phone-store").collection("orders");
 
     
         app.get("/products", async(req, res) => {
@@ -29,9 +30,9 @@ const server = async() => {
             res.send(products)
         })
 
-        app.get("/products/:category", async (req, res) => {
-            const category = req.params.category
-            const products = await productCollection.findOne({ category: category })
+        app.get("/products/:id", async (req, res) => {
+            const id = parseInt(req.params.id)
+            const products = await productCollection.findOne({ category_id: id })
             res.send(products)
         })
 
@@ -41,13 +42,30 @@ const server = async() => {
             res.send(user)
         })
         
+        app.post("/orders", async(req, res) => {
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.send(result)
+        })
+
+        app.get("/users/:email", async(req, res) => {
+            const email = req.params.email
+            const user = await usersCollection.findOne({ email: email });
+            res.send(user)
+        })
+
         app.get("/users", async(req, res) => {
             const role = req.query.role;
             let query = { role : role}
+            
             if(query.role === "seller"){
-                query.role === "seller"
+                query.role === "seller";
+                const users = await usersCollection.find(query).toArray();
+                res.send(users)
             } else if (query.role === "buyer"){
-                query.role === "buyer"
+                query.role === "buyer";
+                const users = await usersCollection.find(query).toArray();
+                res.send(users)
             } else if (query.role === "admin") {
                 const users = await usersCollection.find({}).toArray();
                 res.send(users)
