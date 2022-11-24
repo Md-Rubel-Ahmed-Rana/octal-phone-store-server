@@ -64,4 +64,4 @@ server()
 
 
 
-app.listen(port, () => console.log("Octal Phone Store server is running"))
+app.listen(port, () => console.log("Octal Phone Store server is running on port", port))
