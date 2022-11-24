@@ -72,6 +72,13 @@ const server = async() => {
             }
         })
 
+        app.delete("/users/:email", async(req, res) => {
+            const email = req.params.email;
+            const filter = {email: email};
+            const result = await usersCollection.deleteOne(filter);
+            res.send(result)
+        })
+
     } catch (error) {
         console.log(error);
     }
