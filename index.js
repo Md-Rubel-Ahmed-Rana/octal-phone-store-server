@@ -14,6 +14,12 @@ app.get("/", (req, res) => {
 })
 
 
+// app.get("/categoryData/:id", async(req, res) => {
+//     const id = req.params.id;
+//     const categoryData = await products.filter((product) => product.category_id === id);
+//     res.send(categoryData)
+// })
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.n72f5gi.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -23,16 +29,23 @@ const server = async() => {
         const productCollection = client.db("octal-phone-store").collection("products");
         const usersCollection = client.db("octal-phone-store").collection("users");
         const ordersCollection = client.db("octal-phone-store").collection("orders");
+        const categoryCollection = client.db("octal-phone-store").collection("categories");
 
     
-        app.get("/products", async(req, res) => {
-            const products = await productCollection.find({}).toArray();
-            res.send(products)
+        app.get("/categories", async(req, res) => {
+            const categories = await categoryCollection.find({}).toArray();
+            res.send(categories)
+        })
+
+        app.get("/myproducts/:email", async(req, res) => {
+            const email = req.params.email;
+            const myProducts = await productCollection.find({ seller_email : email}).toArray()
+            res.send(myProducts)
         })
 
         app.get("/products/:id", async (req, res) => {
-            const id = parseInt(req.params.id)
-            const products = await productCollection.findOne({ category_id: id })
+            const id = req.params.id
+            const products = await productCollection.find({ category_id: id }).toArray()
             res.send(products)
         })
 
@@ -45,6 +58,12 @@ const server = async() => {
         app.post("/orders", async(req, res) => {
             const order = req.body;
             const result = await ordersCollection.insertOne(order);
+            res.send(result)
+        })
+
+        app.post("/products", async(req, res) => {
+            const product = req.body;
+            const result = await productCollection.insertOne(product);
             res.send(result)
         })
 

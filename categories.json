@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Samsung",
+        "category_id":"1",
+        "img":"https://i.ibb.co/qpd2NdQ/samsumg.jpg"
+    },
+    {
+        "name": "Oppo",
+        "category_id":"2",
+        "img":"https://i.ibb.co/w4JQHhM/oppo.png"
+    },
+    {
+        "name": "Apple",
+        "category_id":"3",
+        "img":"https://i.ibb.co/jkWK6PD/apple.jpg"
+    },
+    {
+        "name": "Huawei",
+        "category_id":"4",
+        "img":"https://i.ibb.co/Ry4ZPLQ/huawei.png"
+    }
+]
