@@ -49,6 +49,17 @@ const server = async() => {
             res.send(products)
         })
 
+        app.get("/buyers", async(req, res) => {
+            const buyers = await ordersCollection.find({}).toArray();
+            res.send(buyers)
+        })
+
+        app.get("/myOrders", async(req, res) => {
+            const email = req.query.email;
+            const orders = await ordersCollection.find({ email: email }).toArray();
+            res.send(orders)
+        })
+
         app.post("/users", async(req, res) => {
             const userData = req.body;
             const user = await usersCollection.insertOne(userData);
