@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -12,13 +12,6 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Octal Phone Store server is running")
 })
-
-
-// app.get("/categoryData/:id", async(req, res) => {
-//     const id = req.params.id;
-//     const categoryData = await products.filter((product) => product.category_id === id);
-//     res.send(categoryData)
-// })
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.n72f5gi.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -58,6 +51,13 @@ const server = async() => {
             const email = req.query.email;
             const orders = await ordersCollection.find({ email: email }).toArray();
             res.send(orders)
+        })
+
+        app.get("/orders/:id", async(req, res)=> {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const order = await ordersCollection.findOne(query);
+            res.send(order)
         })
 
         app.post("/users", async(req, res) => {
@@ -113,10 +113,5 @@ const server = async() => {
         console.log(error);
     }
 }
-
 server()
-
-
-
-
 app.listen(port, () => console.log("Octal Phone Store server is running on port", port))
