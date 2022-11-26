@@ -119,6 +119,22 @@ const server = async() => {
             res.send(user)
         })
 
+        app.put("/users/sellers/:id", async(req, res) =>{
+            // update seller status in users collection
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const option = {upsert: true};
+            const updatedSeller = {$set: {isVerified: true}}
+            const result = usersCollection.updateOne(filter, updatedSeller, option);
+            res.send(result)
+            
+        })
+
+        app.put("/products/sellers", async(req, res) => {
+            const result = await productCollection.updateMany({ isVerified: false }, { $set: { isVerified: true }})
+            res.send(result)
+        })
+
         app.delete("/users/:email", async (req, res) => {
             const email = req.params.email;
             const filter = { email: email };
