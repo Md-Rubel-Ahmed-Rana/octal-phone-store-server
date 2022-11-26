@@ -118,6 +118,10 @@ const server = async() => {
             res.send(user)
         })
 
+        app.get("/wishlist", async(req, res) => {
+            const products = await wishlistCollection.find({}).toArray();
+            res.send(products)
+        })
         app.post("/wishlist", async(req, res) => {
             const product = req.body;
             const result = await wishlistCollection.insertOne(product);
