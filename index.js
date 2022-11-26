@@ -23,14 +23,13 @@ const server = async() => {
         const usersCollection = client.db("octal-phone-store").collection("users");
         const ordersCollection = client.db("octal-phone-store").collection("orders");
         const categoryCollection = client.db("octal-phone-store").collection("categories");
+        const wishlistCollection = client.db("octal-phone-store").collection("wishlists");
 
     
         app.get("/categories", async(req, res) => {
             const categories = await categoryCollection.find({}).toArray();
             res.send(categories)
         })
-
-        
 
         app.get("/products/:id", async (req, res) => {
             const id = req.params.id
@@ -117,6 +116,12 @@ const server = async() => {
             const userData = req.body;
             const user = await usersCollection.insertOne(userData);
             res.send(user)
+        })
+
+        app.post("/wishlist", async(req, res) => {
+            const product = req.body;
+            const result = await wishlistCollection.insertOne(product);
+            res.send(result)
         })
 
         app.put("/users/sellers/:id", async(req, res) =>{
