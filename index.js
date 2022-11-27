@@ -1,6 +1,7 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -24,7 +25,13 @@ const server = async() => {
         const ordersCollection = client.db("octal-phone-store").collection("orders");
         const categoryCollection = client.db("octal-phone-store").collection("categories");
         const wishlistCollection = client.db("octal-phone-store").collection("wishlists");
+        const advertiseCollection = client.db("octal-phone-store").collection("advertises");
 
+        app.get("/jwt", async(req, res) => {
+            const email = req.query.email;
+            const token = jwt.sign(email, process.env.ACCESS_TOKEN);
+            res.send({accessToken: token})
+        })
     
         app.get("/categories", async(req, res) => {
             const categories = await categoryCollection.find({}).toArray();
@@ -43,8 +50,8 @@ const server = async() => {
         })
 
         app.get("/myproducts/:email", async (req, res) => {
-            const email = req.params.email;
-            const myProducts = await productCollection.find({ seller_email: email }).toArray()
+            const seller_email = req.params.email;
+            const myProducts = await productCollection.find({ seller_email: seller_email }).toArray();
             res.send(myProducts)
         })
 
@@ -143,6 +150,16 @@ const server = async() => {
             const result = await productCollection.updateMany({ isVerified: false }, { $set: { isVerified: true }})
             res.send(result)
         })
+        
+        app.get("/advertises", async(req, res) => {
+            const advertises = await advertiseCollection.find({}).toArray()
+            res.send(advertises)
+        })
+        app.post("/seller/advertise", async(req, res) => {
+            const advertise = req.body;
+            const result = await advertiseCollection.insertOne(advertise);
+            res.send(result)
+        })
 
         app.delete("/users/:email", async (req, res) => {
             const email = req.params.email;
@@ -150,6 +167,18 @@ const server = async() => {
             const result = await usersCollection.deleteOne(filter);
             res.send(result)
         })
+
+        app.delete("/myProducts/delete/:id", async(req, res) => {
+            const id = req.params.id;
+            const product = await productCollection.deleteOne({_id: ObjectId(id)});
+            res.send(product)
+        })
+        app.delete("/advertise/delete/:id", async(req, res) => {
+            const id = req.params.id;
+            const product = await advertiseCollection.deleteOne({id:id});
+            res.send(product)
+        })
+
     } catch (error) {
         console.log(error);
     }
