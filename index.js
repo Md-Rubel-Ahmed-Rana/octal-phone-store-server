@@ -43,9 +43,23 @@ const server = async() => {
             const products = await productCollection.find({ category_id: id }).toArray()
             res.send(products)
         })
+
         app.post("/products", async (req, res) => {
             const product = req.body;
             const result = await productCollection.insertOne(product);
+            res.send(result)
+        })
+
+        app.put("/products/updateToSold/:id", async(req, res) => {
+            const id = req.params.id;
+            const filter = { id: id };
+            const option = {upsert: true};
+            const updatedProduct = {
+                $set: {
+                    sold: true
+                }
+            }
+            const result = await productCollection.updateOne(filter, updatedProduct, option);
             res.send(result)
         })
 
@@ -66,6 +80,10 @@ const server = async() => {
             res.send(orders)
         })
 
+        app.get("/orders", async(req, res)=> {
+            const orders = await ordersCollection.find({}).toArray()
+            res.send(orders)
+        })
         app.get("/orders/:id", async(req, res)=> {
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
@@ -87,7 +105,8 @@ const server = async() => {
             const updateOrder = {
                 $set: {
                     paid: true,
-                    transactionId: paidOrder.transactionId
+                    transactionId: paidOrder.transactionId,
+                    oldId: paidOrder.id
                 }
             }
 
