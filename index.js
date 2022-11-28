@@ -50,16 +50,10 @@ const server = async() => {
             res.send(result)
         })
 
-        app.put("/products/updateToSold/:id", async(req, res) => {
+        app.delete("/products/delete/:id", async(req, res) => {
             const id = req.params.id;
-            const filter = { id: id };
-            const option = {upsert: true};
-            const updatedProduct = {
-                $set: {
-                    sold: true
-                }
-            }
-            const result = await productCollection.updateOne(filter, updatedProduct, option);
+            const query = { _id: ObjectId(id)};
+            const result = await productCollection.deleteOne(query)
             res.send(result)
         })
 
@@ -118,15 +112,16 @@ const server = async() => {
             const role = req.query.role;
             let query = { role: role }
 
-            if (query.role === "seller") {
-                query.role === "seller";
-                const users = await usersCollection.find(query).toArray();
-                res.send(users)
-            } else if (query.role === "buyer") {
-                query.role === "buyer";
-                const users = await usersCollection.find(query).toArray();
-                res.send(users)
-            } else if (query.role === "admin") {
+            // if (query.role === "seller") {
+            //     query.role === "seller";
+            //     const users = await usersCollection.find(query).toArray();
+            //     res.send(users)
+            // } else if (query.role === "buyer") {
+            //     query.role === "buyer";
+            //     const users = await usersCollection.find(query).toArray();
+            //     res.send(users)
+            // } 
+            if (query.role === "admin") {
                 const users = await usersCollection.find({}).toArray();
                 res.send(users)
             }
