@@ -17,6 +17,21 @@ app.get("/", (req, res) => {
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.n72f5gi.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+// verify the generated token
+const verifyJWT = async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(403).send({ mesaage: "unauthorized access" })
+    }
+    const token = authHeader.split(" ")[1]
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, decoded) => {
+        if (err) {
+            return res.status(403).send({ mesaage: "unauthorized access" })
+        }
+        req.decoded = decoded;
+        next()
+    })
+}
 
 const server = async() => {
     try {
@@ -27,6 +42,7 @@ const server = async() => {
         const wishlistCollection = client.db("octal-phone-store").collection("wishlists");
         const advertiseCollection = client.db("octal-phone-store").collection("advertises");
 
+        // create a token to verify
         app.get("/jwt", async(req, res) => {
             const email = req.query.email;
             const token = jwt.sign(email, process.env.ACCESS_TOKEN);
@@ -110,17 +126,7 @@ const server = async() => {
 
         app.get("/users", async (req, res) => {
             const role = req.query.role;
-            let query = { role: role }
-
-            // if (query.role === "seller") {
-            //     query.role === "seller";
-            //     const users = await usersCollection.find(query).toArray();
-            //     res.send(users)
-            // } else if (query.role === "buyer") {
-            //     query.role === "buyer";
-            //     const users = await usersCollection.find(query).toArray();
-            //     res.send(users)
-            // } 
+            let query = { role: role } 
             if (query.role === "admin") {
                 const users = await usersCollection.find({}).toArray();
                 res.send(users)
